@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Esquimos Keery - Inicio</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Aquí cargamos la herramienta mágica de Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -187,6 +188,11 @@
     </div>
 
     <script>
+        // === TUS LLAVES CONFIGURADAS Y LISTAS ===
+        const supabaseUrl = 'https://gfmdgxfnkyzcmzhahefj.supabase.co';
+        const supabaseKey = 'sb_publishable_HiMTtmtqqq6bcAdRPo0GQw_CYmFlSdp';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
         let carrito = [];
 
         function agregarAlCarrito(nombre, precio) {
@@ -261,6 +267,37 @@
 
         // Poner fecha actual por defecto
         document.getElementById('form-fecha').value = new Date().toISOString().split('T')[0];
+
+        // === ESCUCHAR EL ENVÍO DEL FORMULARIO Y MANDARLO A SUPABASE ===
+        document.getElementById('pedido-form').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Evita que la página se reinicie sola
+
+            const nombreCliente = document.getElementById('form-nombre').value;
+            const detallesPedido = document.getElementById('form-detalles').value;
+
+            // Mandamos los datos a la tabla 'pedidos' en minúsculas
+            const { data, error } = await _supabase
+                .from('pedidos')
+                .insert([
+                    { 
+                        nombre: nombreCliente, 
+                        pedido: detallesPedido 
+                    }
+                ]);
+
+            if (error) {
+                alert('¡Huy, hubo un error al mandar tu pedido!: ' + error.message);
+            } else {
+                alert('¡Tu pedido de Esquimos Keery ha sido enviado con éxito! 🥤🍔 En un momento lo preparamos.');
+                
+                // Limpiamos el carrito y el formulario
+                carrito = [];
+                actualizarInterfazCarrito();
+                document.getElementById('pedido-form').reset();
+                document.getElementById('form-fecha').value = new Date().toISOString().split('T')[0];
+                document.getElementById('inicio').scrollIntoView();
+            }
+        });
     </script>
 </body>
 </html>
