@@ -1,164 +1,78 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dulcería Chooper's - Pedidos</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
-<body>
+<script>
+        // Cambiar entre secciones del menú vertical
+        function mostrarSeccion(idSeccion) {
+            document.querySelectorAll('.seccion-tienda').forEach(sec => sec.classList.add('oculto'));
+            document.getElementById('sec-' + idSeccion).classList.remove('oculto');
+        }
 
-    <header class="cabecera-tienda">
-        <div class="cabecera-contenedor">
-            <div class="logo">Dulcería Chooper's</div>
-            <div class="slogan">“El sabor dulce de la felicidad”</div>
-        </div>
-    </header>
+        // Lógica del Carrito de Compras
+        let carrito = [];
+        let total = 0;
 
-    <div class="contenedor-layout">
-        
-        <nav class="menu-vertical">
-            <a href="principal.html" class="nav-item">Principal</a>
-            <a href="#nosotros" class="nav-item">Nosotros</a>
-            <a href="#productos" class="nav-item">Productos</a>
-            <a href="#carrito-seccion" class="nav-item">Carrito (<span id="contador-menu">0</span>)</a>
-            <a href="#pedidos" class="nav-item">Pedidos</a>
-            <a href="#ofertas" class="nav-item">Ofertas</a>
-        </nav>
+        function agregarAlCarrito(nombre, precio) {
+            carrito.push({ nombre, precio });
+            total += precio;
+            actualizarInterfazCarrito();
+        }
 
-        <main class="contenido-principal">
+        function actualizarInterfazCarrito() {
+            const lista = document.getElementById('lista-carrito');
+            const totalTxt = document.getElementById('total-precio');
+            const detallesInput = document.getElementById('pedido_detalles');
             
-            <section id="inicio">
-                <h2>¡Bienvenidos al Panel de Control de Antojos!</h2>
-                <p>Usa nuestro menú interactivo para navegar por las secciones. Agrega todo lo que se te antoje al carrito de compras y envíalo directo a nuestra base de datos en la nube.</p>
-                <img src="https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=800&auto=format&fit=crop&q=60" alt="Banner Dulces" class="img-seccion">
-            </section>
+            if(carrito.length === 0) {
+                lista.innerHTML = '<p class="carrito-vacio">El carrito está vacío.</p>';
+            } else {
+                lista.innerHTML = '';
+                carrito.forEach((item) => {
+                    lista.innerHTML += `<li>${item.nombre} - $${item.precio.toFixed(2)}</li>`;
+                });
+            }
+            totalTxt.innerText = total.toFixed(2);
+            detallesInput.value = JSON.stringify(carrito); 
+        }
 
-            <hr>
+        // Coloca hoy por defecto en el input date
+        document.getElementById('fecha').valueAsDate = new Date();
 
-            <section id="nosotros">
-                <h2>Nosotros</h2>
-                <div class="nosotros-grid">
-                    <div class="card-nosotros">
-                        <h3>Nuestra Ubicación</h3>
-                        <p>📍 Av. de los Caramelos #789, Colonia Dulce, Neza.</p>
-                        <img src="https://images.unsplash.com/photo-1534080391025-44799e9d6ea7?w=300&auto=format&fit=crop&q=60" alt="Ubicación">
-                    </div>
-                    <div class="card-nosotros">
-                        <h3>Nuestro Local</h3>
-                        <p>Un espacio mágico diseñado en tonos pastel para tu comodidad.</p>
-                        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&auto=format&fit=crop&q=60" alt="Local">
-                    </div>
-                    <div class="card-nosotros">
-                        <h3>Nuestros Empleados</h3>
-                        <p>Siempre listos para atenderte con una sonrisa azucarada.</p>
-                        <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=300&auto=format&fit=crop&q=60" alt="Empleados">
-                    </div>
-                </div>
-                <div class="linea-quejas">
-                    📢 <strong>Línea de Quejas y Sugerencias:</strong> llámanos directo al <strong>55-9876-5432</strong>
-                </div>
-            </section>
+        // -------------------------------------------------------------
+        // CONEXIÓN CON SUPABASE
+        const SUPABASE_URL = "https://axjoybhstkcftpelkcqs.supabase.co"; 
+        const SUPABASE_KEY = "TU_ANON_KEY_REAL_AQUI"; // <-- ASEGÚRATE DE PEGAR TU CLAVE REAL AQUÍ
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-            <hr>
+        // Envío del Formulario a la Base de Datos
+        document.getElementById('form-pedido').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if(carrito.length === 0) {
+                alert("Por favor, agrega productos al carrito antes de hacer el pedido.");
+                return;
+            }
 
-            <section id="productos">
-                <h2>Nuestros Productos Disponibles</h2>
-                <p>Haz clic en "Agregar" para sumarlo a tu orden:</p>
-                
-                <div class="grid-productos">
-                    <div class="item-producto">
-                        <span>🍬 Dulces Variados - <strong>$15.00</strong></span>
-                        <button onclick="agregarAlCarrito('Dulces Variados', 15)">Agregar</button>
-                    </div>
-                    <div class="item-producto">
-                        <span>🐻 Gomitas Locas - <strong>$25.00</strong></span>
-                        <button onclick="agregarAlCarrito('Gomitas Locas', 25)">Agregar</button>
-                    </div>
-                    <div class="item-producto">
-                        <span>🍭 Caramelos Macizos - <strong>$10.00</strong></span>
-                        <button onclick="agregarAlCarrito('Caramelos Macizos', 10)">Agregar</button>
-                    </div>
-                    <div class="item-producto">
-                        <span>🌟 Paletas de Cereza - <strong>$12.00</strong></span>
-                        <button onclick="agregarAlCarrito('Paletas de Cereza', 12)">Agregar</button>
-                    </div>
-                    <div class="item-producto">
-                        <span>🔥 Cheetos Flamin Hot - <strong>$22.00</strong></span>
-                        <button onclick="agregarAlCarrito('Cheetos Flamin Hot', 22)">Agregar</button>
-                    </div>
-                    <div class="item-producto">
-                        <span>🥔 Papas con Sal - <strong>$20.00</strong></span>
-                        <button onclick="agregarAlCarrito('Papas con Sal', 20)">Agregar</button>
-                    </div>
-                    <div class="item-producto">
-                        <span>🔴 Lunetas de Chocolate - <strong>$18.00</strong></span>
-                        <button onclick="agregarAlCarrito('Lunetas de Chocolate', 18)">Agregar</button>
-                    </div>
-                    <div class="item-producto">
-                        <span>🍫 Chocolates de Leche - <strong>$24.00</strong></span>
-                        <button onclick="agregarAlCarrito('Chocolates de Leche', 24)">Agregar</button>
-                    </div>
-                </div>
-            </section>
+            const datosPedido = {
+                nombre: document.getElementById('nombre').value,
+                fecha: document.getElementById('fecha').value,
+                direccion: document.getElementById('direccion').value,
+                forma_pago: document.getElementById('forma_pago').value,
+                pedido: document.getElementById('pedido_detalles').value, 
+                total: total
+            };
 
-            <hr>
+            const { data, error } = await supabaseClient
+                .from('pedidos') 
+                .insert([datosPedido]);
 
-            <section id="carrito-seccion">
-                <h2>🛒 Tu Carrito de Compras</h2>
-                <div class="contenedor-carrito">
-                    <ul id="lista-carrito">
-                        <li class="txt-vacio">El carrito está esperando tus dulces...</li>
-                    </ul>
-                    <div class="total-orden">
-                        <strong>Total Acumulado: $<span id="total-precio">0.00</span></strong>
-                    </div>
-                    <button class="btn-ir-formulario" onclick="irAFormulario()">Proceder a Registrar Pedido</button>
-                </div>
-            </section>
-
-            <hr>
-
-            <section id="pedidos">
-                <h2>Formulario de Pedido (Envío Seguro a Base de Datos)</h2>
-                <form id="formulario-chooper">
-                    <label>Nombre del Cliente:</label>
-                    <input type="text" id="campo-nombre" required placeholder="Escribe tu nombre completo">
-
-                    <label>Fecha:</label>
-                    <input type="date" id="campo-fecha" required>
-
-                    <label>Tu Orden (Se auto-llena con el carrito):</label>
-                    <textarea id="campo-pedido" rows="4" readonly required placeholder="Tu lista de compras se verá aquí automáticamente..."></textarea>
-
-                    <label>Dirección de Entrega:</label>
-                    <input type="text" id="campo-direccion" required placeholder="Calle, número y colonia">
-
-                    <label>Forma de Pago:</label>
-                    <select id="campo-pago">
-                        <option value="Efectivo">Efectivo al recibir</option>
-                        <option value="Transferencia">Transferencia Electrónica</option>
-                        <option value="Tarjeta">Tarjeta de Crédito / Débito</option>
-                    </select>
-
-                    <button type="submit" class="btn-enviar-base">Enviar a Base de Datos</button>
-                </form>
-            </section>
-
-            <hr>
-
-            <section id="ofertas">
-                <h2>Ofertas del Día 🎉</h2>
-                <div class="bloque-oferta">
-                    <h3>¡Combo Chooper Pastel!</h3>
-                    <p>En la compra de unos Cheetos + unas Papas, ¡te regalamos una bolsa de Gomitas Locas los miércoles!</p>
-                </div>
-            </section>
-
-        </main>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+            if (error) {
+                console.error("Error:", error);
+                alert("Hubo un error al guardar tu pedido en Supabase.");
+            } else {
+                alert("¡Pedido realizado con éxito! Guardado en la base de datos.");
+                carrito = [];
+                total = 0;
+                actualizarInterfazCarrito();
+                document.getElementById('form-pedido').reset();
+                document.getElementById('fecha').valueAsDate = new Date();
+            }
+        });
+    </script>
