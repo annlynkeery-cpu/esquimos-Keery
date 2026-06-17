@@ -3,15 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenido a Esquimos Keery</title>
+    <title>Dulcería Chooper's - Inicio</title>
+    <!-- Enlazamos los estilos separados -->
     <link rel="stylesheet" href="styles.css">
+    <!-- Cargamos la herramienta mágica de Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bienvenida-body">
-    <div class="bienvenida-container">
-        <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&auto=format&fit=crop&q=60" alt="Esquimos Keery" class="img-bienvenida">
-        <h1>Esquimos Keery</h1>
-        <p class="slogan-bienvenida">“Un antojo dulce y un sabor irresistible”</p>
-        <a href="principal.html" class="btn-ordenar">Ordenar ahora</a>
+<body>
+
+    <header class="header-principal">
+        <div class="header-content">
+            <div class="logo">🍬 Dulcería Chooper's 🍭</div>
+            <div class="slogan">“El rincón más dulce y divertido para tus antojos”</div>
+        </div>
+    </header>
+
+    <div class="contenedor-layout">
+        <nav class="menu-vertical">
+            <a href="#inicio" class="nav-item">Principal</a>
+            <a href="#nosotros" class="nav-item">Nosotros</a>
+            <a href="#productos" class="nav-item">Dulces y Snacks</a>
+            <a href="#carrito-seccion" class="nav-item">Mi Carrito (<span id="contador-menu">0</span>)</a>
+            <a href="#pedidos" class="nav-item">Hacer Pedido</a>
+            <a href="#ofertas" class="nav-item">Promociones</a>
+        </nav>
+
+        <main class="contenido">
+            
+            <section id="inicio">
+                <h2>¡Bienvenidos al paraíso del dulce!</h2>
+                <p>En Dulcería Chooper's encontrarás la mejor variedad de gomitas, chocolates, dulces tradicionales y snacks preparados. ¡Arma tu pedido usando el menú de la izquierda!</p>
+                <img src="https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=800&auto=format&fit=crop&q=60" alt="Dulces Variados" class="img-banner">
+            </section>
+
+            <hr>
+
+            <section id="nosotros">
+                <h2>Sobre Nosotros</h2>
+                <div class="nosotros-grid">
+                    <div class="nosotros-card">
+                        <h3>Nuestra Ubicación</h3>
+                        <p>📍 Av. de los Dulces #456, Colonia Caramelo, Ciudad Neza.</p>
+                        <img src="https://images.unsplash.com/photo-1534080391025-44799e9d6ea7?w=400&auto=format&fit=crop&q=60" alt="Tienda de dulces" class="img-nosotros">
+                    </div>
+                    <div class="nosotros-card">
+                        <h3>Nuestra Tienda</h3>
+                        <p>Un espacio súper colorido y lleno de magia para toda la familia.</p>
+                        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&auto=format&fit=crop&q=60" alt="Estantes de dulces" class="img-nosotros">
+                    </div>
+                    <div class="nosotros-card">
+                        <h3>Atención Chooper</h3>
+                        <p>Nuestro equipo siempre listo para endulzar tu día con el mejor servicio.</p>
+                        <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&auto=format&fit=crop&q=60" alt="Personal de atención" class="img-nosotros">
+                    </div>
+                    <div class="quejas-box">
+                        <h3>Línea de Atención al Cliente</h3>
+                        <p>¿Tienes dudas o sugerencias? Escríbenos o llámanos al: <strong>55-8765-4321</strong></p>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="productos">
+                <h2>Nuestro Menú de Dulces</h2>
+                <p>Haz clic en "Agregar" para armar tu paquete o mesa de dulces:</p>
+                
+                <div class="menu-productos-grid">
+                    <div class="categoria-bloque">
+                        <h3>🍭 Gomitas y Aciditos</h3>
+                        <div class="producto-item">
+                            <span>Gomitas Enchiladas (Bolsa) - <strong>$35.00</strong></span> 
+                            <button onclick="agregarAlCarrito('Gomitas Enchiladas', 35)">Agregar</button>
+                        </div>
+                        <div class="producto-item">
+                            <span>Gusanos de Neón - <strong>$30.00</strong></span> 
+                            <button onclick="agregarAlCarrito('Gusanos de Neón', 30)">Agregar</button>
+                        </div>
+                        <div class="producto-item">
+                            <span>Brocheta de Malvavisco - <strong>$15.00</strong></span> 
+                            <button onclick="agregarAlCarrito('Brocheta de Malvavisco', 15)">Agregar</button>
+                        </div>
+                        <div class="producto-item">
+                            <span>Pulparindos (Paquete x10) - <strong>$40.00</strong></span> 
+                            <button onclick="agregarAlCarrito('Pulparindos Paquete', 40)">Agregar</button>
+                        </div>
+                    </div>
+
+                    <div class="categoria-bloque">
+                        <h3>🍫 Chocolates y Antojos</h3>
+                        <div class="producto-item">
+                            <span>Chocoretas Grandes - <strong>$25.00</strong></span> 
+                            <button onclick="agregarAlCarrito('Chocoretas Grandes', 25)">Agregar</button>
+                        </div>
+                        <div class="producto-item">
+                            <span>Barra de Chocolate con Leche - <strong>$20.00</strong></span> 
+                            <button onclick="agregarAlCarrito('Barra Chocolate', 20)">Agregar</button>
+                        </div>
+                        <div class="producto-item">
+                            <span>Paleta Payaso - <strong>$18.00</strong></span> 
+                            <button onclick="agregarAlCarrito('Paleta Payaso', 18)">Agregar</button>
+                        </div>
+                        <div class="producto-item">
+                            <span>Mazapán Gigante - <strong>$12.00</strong></span> 
+                            <button onclick="agregarAlCarrito('Mazapán Gigante', 12)">Agregar</button>
+                        </div>
+                    </div>
+
+                    <div class="categoria-bloque">
+                        <h3>🍿 Botanas Preparadas</h3>
+                        <div class="producto-item">
+                            <span>Papas Locas con Salsa y Limón - <strong>$45.00</strong></span> 
+                            <button onclick="agregarAlCarrito('Papas Locas', 45)">Agregar</button>
+                        </div>
+                        <div class="producto-item">
+                            <span>Chicharrones Preparados - <strong>$40.00</strong></span> 
+                            <button onclick="agregarAlCarrito('Chicharrones Preparados', 40)">Agregar</button>
+                        </div>
+                        <div class="producto-item">
+                            <span>Palomitas de Mantequilla - <strong>$25.00</strong></span> 
+                            <button onclick="agregarAlCarrito('Palomitas Mantequilla', 25)">Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="carrito-seccion">
+                <h2>🛒 Carrito de Compras - Chooper's</h2>
+                <div class="carrito-contenedor">
+                    <ul id="lista-carrito" class="lista-carrito">
+                        <li class="carrito-vacio">Tu carrito está vacío. ¡Elige tus dulces favoritos!</li>
+                    </ul>
+                    <div class="carrito-total">
+                        <strong>Total a pagar: $<span id="total-precio">0.00</span></strong>
+                    </div>
+                    <button class="btn-procesar" onclick="procesarAFormulario()">Confirmar Compra</button>
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="pedidos">
+                <h2>Formulario de Pedido (Envío a Supabase)</h2>
+                <form class="formulario-pedidos" id="pedido-form">
+                    <label>Nombre del Cliente:</label>
+                    <input type="text" id="form-nombre" required placeholder="Ej. Juan Pablo">
+
+                    <label>Fecha de la Orden:</label>
+                    <input type="date" id="form-fecha" required>
+
+                    <label>Detalle de los Dulces (Automático):</label>
+                    <textarea rows="4" id="form-detalles" readonly required placeholder="Los dulces de tu carrito aparecerán aquí..."></textarea>
+
+                    <label>Dirección de Entrega:</label>
+                    <input type="text" id="form-direccion" required placeholder="Calle, número y referencias para el reparto">
+
+                    <label>Método de Pago:</label>
+                    <select id="form-pago">
+                        <option value="Efectivo">Efectivo al recibir</option>
+                        <option value="Transferencia">Transferencia bancaria</option>
+                    </select>
+
+                    <button type="submit" class="btn-enviar">Mandar a la Base de Datos</button>
+                </form>
+            </section>
+
+            <hr>
+
+            <section id="ofertas">
+                <h2>Promociones de Locura 🍭</h2>
+                <div class="oferta-card">
+                    <h3>Viernes de Antojos Locos 🎉</h3>
+                    <p>En la compra de tus Papas Locas, ¡llévate una bolsa de Gomitas Enchiladas a mitad de precio!</p>
+                </div>
+            </section>
+
+        </main>
     </div>
+
+    <!-- Al final de todo enlazamos las funciones lógicas -->
+    <script src="script.js"></script>
 </body>
 </html>
